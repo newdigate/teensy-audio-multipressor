@@ -6,19 +6,17 @@
  * https://github.com/Blackaddr/BALibrary
  * 
  */
+
+#define USE_BA_LIBRARY 0
+
 #include <Wire.h>
 #include <Audio.h>
 #include <MIDI.h>
+#if USE_BA_LIBRARY
 #include "BALibrary.h"
-#include "effect_compressor.h"
-
-MIDI_CREATE_DEFAULT_INSTANCE();
-using namespace midi;
-
-//#define ENABLE_MEM_TEST // uncomment this line and 'Save As' to a new location to test the SPI memory
-
 using namespace BALibrary;
-
+#endif
+#include "effect_compressor.h"
 
 #include <Audio.h>
 #include <Wire.h>
@@ -73,16 +71,13 @@ AudioConnection          patchCord16(mixer1, 0, i2s2, 0);
 AudioConnection          patchCord17(mixer2, 0, queue1, 0);
 // GUItool: end automatically generated code
 
-
+#if USE_BA_LIBRARY
 BAAudioControlWM8731      codecControl;
-BAGpio                    gpio;  // access to User LED
+#else
+AudioControlSGTL5000 audioShield;
+#endif
 
 unsigned long t=0;
-
-// SPI stuff
-int spiAddress = 0;
-int spiData = 0xff;
-int spiErrorCount = 0;
 
 int16_t buffer[128];
 int16_t lastbuffer[128];
@@ -94,31 +89,32 @@ uint32_t oscilliscope_x2 = 0;
 
 void setup() {
 
-  MIDI.begin(MIDI_CHANNEL_OMNI);
   Serial.begin(57600);
   //while (!Serial) delay (5);
-  delay(5);
 
-  // If the codec was already powered up (due to reboot) power itd own first
+  AudioMemory(24);
+  
+#if USE_BA_LIBRARY
   codecControl.disable();
   delay(100);
-  AudioMemory(24);
-
-  Serial.println("Enabling codec...\n");
+   
   codecControl.enable();
   delay(100);
-
+#else
+  // turn on the output
+  audioShield.enable();
+  audioShield.volume(0.5);
+#endif
   
   tft.initR(INITR_GREENTAB); // initialize a ST7735R chip, green tab
   tft.setRotation(3);
   tft.setTextWrap(true);
   tft.fillScreen(ST7735_BLACK);
   tft.setTextColor(ST7735_BLUE);   
-  tft.println("Teensy audio compressor...");
-
-
-  //Serial.println("Initializing...\n");
-  Serial.println("Done...\n");
+  tft.println("Teensy");
+  tft.println("multichannel");
+  tft.println("audio");
+  tft.println("compressor...");
  
 /*
   long m = micros();
@@ -149,8 +145,6 @@ void setup() {
   
   queue1.begin();
   queue2.begin();
-  //tft.print("init...");
-  
 }
 
 void updateScope1() {
