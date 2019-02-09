@@ -13,15 +13,12 @@
 
 #include <Wire.h>
 #include <Audio.h>
+
 #if USE_BA_LIBRARY
 #include "BALibrary.h"
 using namespace BALibrary;
 #endif
 #include "effect_compressor.h"
-
-#include <SPI.h>
-#include <SD.h>
-#include <SerialFlash.h>
 
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <ST7735_t3.h>
@@ -76,8 +73,6 @@ BAAudioControlWM8731      codecControl;
 AudioControlSGTL5000 audioShield;
 #endif
 
-unsigned long t=0;
-
 int16_t buffer[128];
 int16_t lastbuffer[128];
 uint32_t oscilliscope_x = 0;
@@ -121,7 +116,6 @@ void setup() {
     if (i % 0x4F == 0) {
       //Serial.print(i);
       //Serial.print(":");
-      //;
       Serial.print(compressor1.interpolate(i));
       Serial.println();
     }
