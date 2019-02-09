@@ -1,5 +1,5 @@
 # teensy-audio-multipressor
-sketch with multi-band audio compression using teensy microcontroller
+a multi-band audio compression sketch using teensy microcontroller and a very crude logrythmic audio compression alogrythm. 
 
 ## effect_compressor
 * f(x) = log10((9 * x)+1)
