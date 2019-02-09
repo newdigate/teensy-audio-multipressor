@@ -1,4 +1,4 @@
-# teensy-audio-multipressor
+# teensy audio multipressor
 a multi-band audio compression sketch using teensy microcontroller and a very crude logrythmic audio compression alogrythm. 
 
 ## effect_compressor
