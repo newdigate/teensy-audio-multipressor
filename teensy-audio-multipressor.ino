@@ -1,25 +1,24 @@
 /*************************************************************************
- * This demo uses the BAGuitar library to provide enhanced control of
- * the TGA Pro board.
- * 
+ * This demo is adapted from BALibrary for use with the TGA Pro audio board.
+ * change USE_BA_LIBRARY=1 to compile for TGAPro audio board, 
+ * or keep USE_BA_LIBRARY=0 for standard teensy audio board configuration
+ *
  * The latest copy of the BA Guitar library can be obtained from
  * https://github.com/Blackaddr/BALibrary
  * 
+ * Teensy audio library gui: https://www.pjrc.com/teensy/gui/index.html
  */
 
 #define USE_BA_LIBRARY 0
 
 #include <Wire.h>
 #include <Audio.h>
-#include <MIDI.h>
 #if USE_BA_LIBRARY
 #include "BALibrary.h"
 using namespace BALibrary;
 #endif
 #include "effect_compressor.h"
 
-#include <Audio.h>
-#include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
 #include <SerialFlash.h>
