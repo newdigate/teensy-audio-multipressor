@@ -8,18 +8,18 @@ bool AudioEffectCompressor::_initialized  = false;
 double AudioEffectCompressor::logtable[NumlogTablePoints];
 
 void AudioEffectCompressor::buildLogTable() {
- 
+  
   if (! _initialized) {
     for (int i=0; i<NumlogTablePoints;i++) {
       logtable[i] = 0x7FFF * log10((9.0 * ((float)i)/NumlogTablePoints) + 1);
     }
     _initialized = true;
   }
+  
 }
 
 int16_t AudioEffectCompressor::interpolate(int16_t input) {
-    if (!_initialized) return input; 
-    
+
     bool isNegative = input < 0;
     
     double fPoint = (NumlogTablePoints-1) * abs(input) / 0x7FFF;
@@ -34,12 +34,10 @@ int16_t AudioEffectCompressor::interpolate(int16_t input) {
 
     double amountPoint1 = 1000.0 * (point1 - fPoint);
     double amountPoint2 = 1000.0 - amountPoint1;
-
     double p0 = logtable[point0];
     double p1 = logtable[point1];
 
     int16_t result1 = ((amountPoint1/1000.0 * p0) + (amountPoint2/1000.0 * p1));
-
     return isNegative? -result1 : result1;
 }
 
@@ -55,35 +53,21 @@ void AudioEffectCompressor::update(void)
     }
     pa = (int16_t *)(blocka->data);
 
-    for (uint32_t n = 0; n < AUDIO_BLOCK_SAMPLES; n++) {
-        a1         = pa[n];
-        double d = a1 * _inputGain;
-        a1 = round(d);
-        pa[n] = interpolate(a1); 
-        pa[n] = a1;
+    if (_enabled) {
+      for (uint32_t n = 0; n < AUDIO_BLOCK_SAMPLES; n++) {
+          a1         = pa[n];
+          double d = a1 * _inputGain;
+          a1 = round(d);
+          pa[n] = interpolate(a1); 
+          pa[n] = a1;
+      }
     }
     transmit(blocka);
     release(blocka);
 }
 
-void AudioEffectCompressor::setThreshold(uint16_t threshold) {
-    _threshold = threshold;
-}
-
-void AudioEffectCompressor::setGainReduction(uint8_t gainReduction) {
-    _gainReduction = gainReduction;
-}
-
 void AudioEffectCompressor::setInputGain(float inputGain) {
     _inputGain = inputGain;
-}
-
-uint16_t AudioEffectCompressor::getThreshold() {
-    return _threshold;
-}
-
-uint8_t AudioEffectCompressor::getGainReduction() {
-    return _gainReduction;
 }
 
 float AudioEffectCompressor::getInputGain() {
