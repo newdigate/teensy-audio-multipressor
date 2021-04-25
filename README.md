@@ -5,6 +5,9 @@ a multi-band audio compression sketch using teensy microcontroller and a very cr
 
 ## effect_compressor
 * f(x) = log10((9 * x)+1) where 0 < x < 1
+
+![input / output curve](log_curve.png)
+
 * http://mathnotepad.com/
 ```
 f(x) = log((9 * x)+1, 10)
