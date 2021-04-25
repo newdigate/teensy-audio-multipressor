@@ -59,7 +59,6 @@ void AudioEffectCompressor::update(void)
           double d = a1 * _inputGain;
           a1 = round(d);
           pa[n] = interpolate(a1); 
-          pa[n] = a1;
       }
     }
     transmit(blocka);
