@@ -1,7 +1,7 @@
 # teensy audio multipressor
-a multi-band audio compression sketch using teensy microcontroller and a very crude logrythmic audio compression alogrythm. 
+a multi-band audio ~~compression~~ waveshaper to reduce dynamic range by applying a log curve (below) to the input signal
 
-* basically a wave shaper that applies a logrithmic wave shape
+Please dont take this too seriously - its really just a crazy experiment. I'd like to see how well it works for sided-chain ~~compression~~ "wave-shaping". 
 
 ## effect_compressor
 * f(x) = log10((9 * x)+1) where 0 < x < 1
