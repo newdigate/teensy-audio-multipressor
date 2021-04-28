@@ -22,22 +22,15 @@ int16_t AudioEffectCompressor::interpolate(int16_t input) {
 
     bool isNegative = input < 0;
     
-    double fPoint = (NumlogTablePoints-1) * abs(input) / 0x7FFF;
+    double fPoint = (NumlogTablePoints-1) * abs(input) / double(0x7FFF);
     int point0 = floor(fPoint);
-    int point1 = ceil(fPoint);
- 
-    if (point0 == point1) {
-        if (point0 >= NumlogTablePoints) 
-          point0 = NumlogTablePoints - 1;
-        return isNegative? - logtable[point0] : logtable[point0];
-    }
-
-    double amountPoint1 = 1000.0 * (point1 - fPoint);
-    double amountPoint2 = 1000.0 - amountPoint1;
+    int point1 = point0 + 1;
+    double amountPoint1 = point1 - fPoint;
+    double amountPoint2 = 1 - amountPoint1;
     double p0 = logtable[point0];
     double p1 = logtable[point1];
 
-    int16_t result1 = ((amountPoint1/1000.0 * p0) + (amountPoint2/1000.0 * p1));
+    int16_t result1 = (amountPoint1 * p0) + (amountPoint2 * p1);
     return isNegative? -result1 : result1;
 }
 
